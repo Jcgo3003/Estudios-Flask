@@ -1,0 +1,10 @@
+Pasos para iniciar los programas
+Iniciar cada uno en una consola diferente
+
+1 Iniciar en un terminal rabbitmq ----- sudo rabbitmq-server    ---- Con esto se detiene el servidor - sudo rabbitmqctl stop
+2 En un segundo terminal poner las claves de correo
+3 En ese mismo terminal iniciar celery ------ celery -A tasks worker --loglevel=info ---- donde 'tasks' es el nombre de la app
+4 Iniciar Flask ---- run flask - o - python app.py
+5 Ir a la pagina indicada por flask en el terminal
+
+6 Si todo salio bien beber una cerveza bien fria para celebrar, advertencia este paso no se puede omitir!!!

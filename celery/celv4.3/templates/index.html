@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <title> Estado del Metro Web-app </title>
+    <style>
+        .barra_act {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+  </head>
+
+  <body>
+     <!--Presentado la app-->
+    <h1> Estado del Metro Web-app </h1>
+    <img src="/static/cat.jpg" width="200" height="200">
+    <h2>Estado del metro</h2>
+
+    <!--Placeholder para el script-->
+    <div id="barra_act">  </div>
+
+    <!--jquery-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script>
+        // Plantilla
+        div = $('<div class="barra_act"><div><img id="imagen" src="/static/vacio.jpg" width="100" height="100"></div><div></div><div>&nbsp;</div></div>');
+        $('#barra_act').append(div);
+
+        // receptor de datos
+        function metro_receptor() {
+            // send ajax POST request to start background job
+            $.ajax({
+                success: function(data, status, request) {
+                    status_url = '/status/182';
+                    actualizar(status_url, div[0]);
+                },
+                                  error: function() {
+                                      alert('Unexpected error');
+                }
+            });
+
+        }
+
+        function actualizar(status_url, status_div) {
+            // Obtiene datos del json
+            $.getJSON(status_url, function(data) {
+
+                // update UI
+                $(status_div.childNodes[1]).text(data['status']);
+
+                /// Cambiar imagenes de estado, revisar!!!
+                estado_m = parseInt(data['current']);
+
+                if ( estado_m == 3){
+                     document.getElementById('imagen').src="/static/1.jpg";
+                }
+                else if( estado_m == 5 ){
+                     document.getElementById('imagen').src="/static/2.jpg";
+                }
+                else if ( estado_m == 10){
+                     document.getElementById('imagen').src="/static/3.jpg";
+                }
+                else if( estado_m == 15 ){
+                     document.getElementById('imagen').src="/static/4.jpg";
+                }
+                else if ( estado_m == 20){
+                     document.getElementById('imagen').src="/static/5.jpg";
+                }
+
+                //// esto solo serviria para mostrar que no hay servicio en el metro
+                if (data['state'] != 'PENDING' && data['state'] != 'En linea') {
+                    if ('result' in data) {
+                        // show result
+                        $(status_div.childNodes[2]).text('En linea');
+                        //$(status_div.childNodes[3]).text('Result: ' + data['result']);
+                    }
+                    else {
+                        // something unexpected happened
+                        $(status_div.childNodes[2]).text('Caido');
+                        //$(status_div.childNodes[3]).text('Result: ' + data['state']);
+                    }
+                }
+                else {
+                    // Actualizar cada 2 segundos
+                    setTimeout(function() {
+                        actualizar(status_url, status_div);
+                    }, 2000);
+                }
+            });
+        }
+
+        // Para comenzar la funcion al arranque
+        window.onload = metro_receptor;
+
+    </script>
+  </body>
+</html>

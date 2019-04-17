@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <tit+le> Metro Sensor</title>
+    <style>
+        .progress {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+  </head>
+  <body>
+
+     <!--palabras-->
+    <h1>Sensor</h1>
+    <img id="myImage1" src="/static/perro.jpg" width="200" height="200">
+    <h2>Hacer click para comenzar la tarea en segundo plano </h2>
+
+    <!--botton-->
+    <button id="botton"> Comienza </button> <br> <br>
+    <div id="progress">  </div>
+
+    <!--   json jquery  -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script>
+        function sensor() {
+            // Pide a ajax que comienze la tarea en seugndo plano
+            $.ajax({
+                type: 'POST',
+                url: '/longtask', success: function() {
+                    alert('todo bien');
+                },
+                                  error: function() {
+                                      alert('Unexpected error');
+                }
+            });
+
+        }
+
+        $(function() {
+            $('#botton').click(sensor);
+        });
+
+    </script>
+
+  </body>
+
+</html>

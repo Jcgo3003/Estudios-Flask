@@ -1,0 +1,3 @@
+export MAIL_USERNAME=jbstdump@gmail.com
+export MAIL_PASSWORD=M5s3C2321ljubL
+

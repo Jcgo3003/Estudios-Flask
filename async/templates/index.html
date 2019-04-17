@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!--manda llamar sus librerias desde afuera-->
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+
+    <!--Manda a llamar codigo desde el static -->
+    <script src="static/js/application.js"></script>
+
+    <!--Aqui esta su platilla-->
+    <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+
+</head>
+<body>
+
+
+<div class="container">
+  <div class="jumbotron">
+    <h2>Asynchronous Flask Communication</h2>
+    <p>Prueba Actualizando una variable por medio de sockets.</p>
+  </div>
+</div>
+
+<div class="container" id="content">
+
+    <p>Async mode is: <b>{{ async_mode }}</b></p>
+    <div> <h3> Segunda parte </h3> </div>
+    <p> Estado: <b><span id="log"></span>ms</b></p>
+
+</div>
+
+</body>
+
+</html>

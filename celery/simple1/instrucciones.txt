@@ -1,0 +1,6 @@
+Pasos para iniciar los programas
+Iniciar cada uno en una consola diferente
+
+1 Iniciar rabbitmq ----- sudo rabbitmq-server    ---- Con esto se detiene el servidor - sudo rabbitmqctl stop
+2 Iniciar celery ------ celery -A tasks worker --loglevel=info ---- donde 'tasks' es el nombre de la app
+3 Iniciar Flask ---- run flask

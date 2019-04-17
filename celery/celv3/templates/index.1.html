@@ -1,0 +1,93 @@
+<html>
+
+  <head>
+
+    <title>Actualizando estados en celery</title>
+
+    <style>
+        .progress {
+            width: 100%;
+            text-align: center;
+                   }
+    </style>
+
+  </head>
+
+  <body>
+    <h1>Primer intento</h1>
+    <h2>Corriendo una tarea en segundo plano en celery</h2>
+    <h3> Estado de la tarea en curso </h3>
+
+    <!-- Boton para inicial la tarea > Iniciar  -->
+    <button id="start-bg-job"> Comienza </button> <br> <br>
+    <div id="progress"></div>
+
+    <!--Estas son las barras de estado, AQUI DEBO SUSTIIRLO CON ALGO PARA QUE MUESTRE EL ESTADO DEL SERVICIO!!!-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <!--Aqui esta el scrip y su funcionamiento -->
+    <script>
+        function start_long_task() { //comienza la funcion star_long_task//
+
+            // add task status elements - agrega elementos de estado de la tarea
+            div = $('<div class="progress">  <div></div> <div>0%</div> <div>...</div> <div>&nbsp;</div>  </div>');
+            $('#progress').append(div); /// llama a progress y append div
+
+            // create a progress bar
+            var nanobar = new Nanobar({    /// crea var nanovar la llama nueva nanobar
+                bg: '#44f',        //// color azul
+                target: div[0].childNodes[0]    ///blanco  es div - con nodos hijo 0
+            });
+
+            // send ajax POST request to start background job //hace un ajax post resquest para comenzar en segundo plano
+            $.ajax({
+                type: 'POST',    ///configuracion
+                url: '/longtask',  //// aqui esta accionando la tarea en segundo plano
+                success: function(data, status, request) {    ///success crea funtion con data status request
+                    status_url = request.getResponseHeader('Location'); //// aqui obtiene la respuesta de location
+                    update_progress(status_url, nanobar, div[0]);////rellena update_progress con status_url nanobar div 0
+                },
+                error: function() {       //// esto es por si ocurre un error en algun punto del proceso
+                    alert('Unexpected error');
+                }
+            });
+        }////aqui esta la funcion actulizar progreso
+        function update_progress(status_url, nanobar, status_div) { ///con sitio para 3 variables
+
+            // send GET request to status URL
+            $.getJSON(status_url, function(data) {  ///manda obtener un json lo pide de status_url, y data
+
+                // update UI  actualiza la interfaz de usuario
+                percent = parseInt(data['current'] * 100 / data['total']);  ///porcentage = un int con los datos current lo * 100 /total
+                nanobar.go(percent);  ///rellena porcentaje de nanobar con porcentage de arriva
+                $(status_div.childNodes[1]).text(percent + 'Por ciento'); ///aqui llama status... lo rellena con percent y
+                $(status_div.childNodes[2]).text(data['status']);//// aqui rellena con los mensaje de estado
+
+                if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') { ////de data obtiene state != pendiente and =! de progreso
+                    if ('result' in data) { /// si encuentra resultado en data
+                        /// muestra en una tecera caja el texto resultado + lo que hay en resultado
+                        $(status_div.childNodes[3]).text('Result: ' + data['result']);
+
+                    }
+                    else {
+                        // something unexpected happened /// por si ocurre un error antes de terminar
+                        $(status_div.childNodes[3]).text('Result: ' + data['state']);
+                    }
+                }
+                else {
+                    // rerun in 2 seconds // para revisar el estado cada 2 segundos
+                    setTimeout(function() {  ///le pone tiempo a la funcion vacia
+                        update_progress(status_url, nanobar, status_div);  ////y manda llamar a update para recuperar los datos
+                    }, 2000);  ////cada 2 segundos
+                }
+            });
+        }
+        $(function() {/////este es el botto como tal
+            $('#start-bg-job').click(start_long_task);
+        });
+    </script>
+
+  </body>
+
+</html>
